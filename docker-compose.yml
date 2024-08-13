@@ -3,5 +3,28 @@ services:
     build:
       context: ./dockerfiles/app
       dockerfile: Dockerfile
+    ports:
+      - "1000:1000"
     volumes:
       - ./:/mnt
+    networks:
+      - mynetwork
+  
+  db:
+    image: postgres:14.2
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - mynetwork
+
+volumes:
+  db-data:
+networks:
+  mynetwork:
+    external: true  
