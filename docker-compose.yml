@@ -1,0 +1,7 @@
+services:
+  app:
+    build:
+      context: ./dockerfiles/app
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/mnt
