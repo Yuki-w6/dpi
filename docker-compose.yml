@@ -3,10 +3,13 @@ services:
     build:
       context: ./dockerfiles/app
       dockerfile: Dockerfile
+    environment:
+      DPI_ENV: dev
+      PORT: 1000
     ports:
       - "1000:1000"
     volumes:
-      - ./:/mnt
+      - ./:/app
     networks:
       - mynetwork
   

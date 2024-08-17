@@ -32,6 +32,7 @@ func main() {
 	sqldb, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
+		os.Exit(1)
 	}
 	defer sqldb.Close()
 
@@ -43,6 +44,7 @@ func main() {
 	err = db.NewSelect().Model(&todos).Order("created_at").Where("until is not null").Where("done is false").Scan(ctx)
 	if err != nil {
 		log.Fatal(err)
+		os.Exit(1)
 	}
 	if len(todos) == 0 {
 		return
