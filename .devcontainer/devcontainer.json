@@ -5,7 +5,7 @@
         "docker-compose.yml"
     ],
     "service": "app",
-    "workspaceFolder": "/mnt",
+    "workspaceFolder": "/app",
     "customizations": {
         "vscode": {
             "extensions": [
