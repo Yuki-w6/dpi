@@ -25,6 +25,15 @@ services:
       - ./app/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - mynetwork
+  gcs:
+    image: fsouza/fake-gcs-server
+    ports:
+      - 4443:4443
+    volumes:
+      - ${PWD}/tmp/gcs-data:/data/images
+    command: -scheme http
+    networks:
+      - mynetwork
 
 volumes:
   db-data:
