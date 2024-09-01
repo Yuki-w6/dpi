@@ -2,13 +2,15 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
+	"io"
 	"log"
 	"os"
 
+	"cloud.google.com/go/storage"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -54,15 +56,7 @@ func main() {
 
 	app := fiber.New()
 
-	// app.Use(cors.New(cors.Config{
-	// 	AllowOrigins: "http://localhost:5173",
-	// 	AllowHeaders: "Origin,Content-Type,Accept",
-	// }))
-
-	app.Get("/api/todos", getTodos)
-	app.Post("/api/todos", createTodo)
-	app.Patch("/api/todos/:id", updateTodo)
-	app.Delete("/api/todos/:id", deleteTodo)
+	app.Post("/api/upload", uploadImage)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -77,84 +71,49 @@ func main() {
 
 }
 
-func getTodos(c *fiber.Ctx) error {
-	var todos []Todo
-
-	cursor, err := collection.Find(context.Background(), bson.M{})
-
+func uploadImage(c *fiber.Ctx) error {
+	file, err := c.FormFile("image")
 	if err != nil {
-		return err
+		return c.Status(400).JSON(fiber.Map{"error": "Failed to receive image"})
 	}
 
-	defer cursor.Close(context.Background())
+	// GCPのバケット名を指定
+	bucketName := "your-bucket-name"
 
-	for cursor.Next(context.Background()) {
-		var todo Todo
-		if err := cursor.Decode(&todo); err != nil {
-			return err
-		}
-		todos = append(todos, todo)
-	}
-
-	return c.JSON(todos)
-}
-
-func createTodo(c *fiber.Ctx) error {
-	todo := new(Todo)
-	// {id:0,completed:false,body:""}
-
-	if err := c.BodyParser(todo); err != nil {
-		return err
-	}
-
-	if todo.Body == "" {
-		return c.Status(400).JSON(fiber.Map{"error": "Todo body cannot be empty"})
-	}
-
-	insertResult, err := collection.InsertOne(context.Background(), todo)
+	// GCPに画像をアップロード
+	ctx := context.Background()
+	client, err := storage.NewClient(ctx)
 	if err != nil {
-		return err
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to create GCP client"})
 	}
+	defer client.Close()
 
-	todo.ID = insertResult.InsertedID.(primitive.ObjectID)
+	bucket := client.Bucket(bucketName)
+	object := bucket.Object(file.Filename)
+	writer := object.NewWriter(ctx)
+	defer writer.Close()
 
-	return c.Status(201).JSON(todo)
-}
-
-func updateTodo(c *fiber.Ctx) error {
-	id := c.Params("id")
-	objectID, err := primitive.ObjectIDFromHex(id)
-
+	fileContent, err := file.Open()
 	if err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "Invalid todo ID"})
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to open image file"})
+	}
+	defer fileContent.Close()
+
+	if _, err := io.Copy(writer, fileContent); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to upload image to GCP"})
 	}
 
-	filter := bson.M{"_id": objectID}
-	update := bson.M{"$set": bson.M{"completed": true}}
-
-	_, err = collection.UpdateOne(context.Background(), filter, update)
+	// バケット名をPostgresのDBに保存
+	db, err := sql.Open("postgres", "your-postgres-connection-string")
 	if err != nil {
-		return err
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to connect to Postgres"})
 	}
+	defer db.Close()
 
-	return c.Status(200).JSON(fiber.Map{"success": true})
-
-}
-
-func deleteTodo(c *fiber.Ctx) error {
-	id := c.Params("id")
-	objectID, err := primitive.ObjectIDFromHex(id)
-
+	_, err = db.Exec("INSERT INTO buckets (name) VALUES ($1)", bucketName)
 	if err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "Invalid todo ID"})
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to save bucket name to Postgres"})
 	}
 
-	filter := bson.M{"_id": objectID}
-	_, err = collection.DeleteOne(context.Background(), filter)
-
-	if err != nil {
-		return err
-	}
-
-	return c.Status(200).JSON(fiber.Map{"success": true})
+	return c.Status(200).JSON(fiber.Map{"message": "Image uploaded successfully", "bucket": bucketName, "filename": file.Filename})
 }
