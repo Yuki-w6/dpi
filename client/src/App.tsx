@@ -1,4 +1,4 @@
-import Home from './pages/Home';
+import Home from './Pages/Home/Home';
 
 export const BASE_URL =
   import.meta.env.MODE === 'development' ? 'http://localhost:1000/api' : '/api';
