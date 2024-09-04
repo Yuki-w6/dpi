@@ -4,19 +4,32 @@ import (
 	"image"
 	_ "image/jpeg"
 	_ "image/png"
+	"log"
+	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	if os.Getenv("ENV") != "production" {
+		err := godotenv.Load(".env")
+		if err != nil {
+			log.Fatal("Error loading .env file:", err)
+		}
+	}
+	baseUrl := os.Getenv("BASE_URL")
+	port := os.Getenv("PORT")
+	clientPort := os.Getenv("CLIENT_PORT")
+
 	router := gin.Default()
 
 	// CORSミドルウェアを追加
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},  // 許可するオリジンを指定
-		AllowMethods:     []string{"POST", "GET", "OPTIONS"}, // 許可するHTTPメソッド
-		AllowHeaders:     []string{"Content-Type"},           // 許可するヘッダー
+		AllowOrigins:     []string{baseUrl + ":" + clientPort}, // 許可するオリジンを指定
+		AllowMethods:     []string{"POST", "GET", "OPTIONS"},   // 許可するHTTPメソッド
+		AllowHeaders:     []string{"Content-Type"},             // 許可するヘッダー
 		AllowCredentials: true,
 	}))
 
@@ -56,5 +69,5 @@ func main() {
 		})
 	})
 
-	router.Run(":1000")
+	router.Run(":" + port)
 }
