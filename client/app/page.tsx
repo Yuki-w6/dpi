@@ -7,9 +7,11 @@ export default function Page() {
   const [message, setMessage] = useState('');
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
+  const [x_dpi, setXDPI] = useState(null);
+  const [y_dpi, setYDPI] = useState(null);
   const [filename, setFilename] = useState('');
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: any) => {
     setFile(e.target.files[0]);
   };
 
@@ -31,6 +33,8 @@ export default function Page() {
     setWidth(data.width);
     setHeight(data.height);
     setFilename(data.filename);
+    setXDPI(data.xDPI);
+    setYDPI(data.yDPI);
   };
 
   return (
@@ -44,6 +48,8 @@ export default function Page() {
           <p>ファイル名: {filename}</p>
           <p>幅: {width}</p>
           <p>高さ: {height}</p>
+          <p>解像度（水平方向）: {x_dpi}</p>
+          <p>解像度（垂直方向）: {y_dpi}</p>
         </div>
       )}
     </div>
