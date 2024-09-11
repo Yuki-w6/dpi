@@ -1,12 +1,14 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
+  // Tailwind CSSを適用するファイル群
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    // 共通スタイルを定義
     extend: {
       gridTemplateColumns: {
         '13': 'repeat(13, minmax(0, 1fr))',

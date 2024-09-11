@@ -4,8 +4,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <body>{children}</body>
+      <div>test</div>
     </html>
   );
 }

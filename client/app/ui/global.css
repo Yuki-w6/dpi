@@ -1,3 +1,4 @@
+/* Tailwind CSSで利用しているスタイル定義を有効化 */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
