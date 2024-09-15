@@ -1,6 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import './ui/global.css';
+import { Noto_Sans_JP } from 'next/font/google';
+
+// Googleフォントを有効化
+const fnt = Noto_Sans_JP({ subsets: ['latin'] });
 
 export default function Page() {
   const [file, setFile] = useState(null);

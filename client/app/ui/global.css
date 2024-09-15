@@ -22,6 +22,7 @@ input[type='number']::-webkit-outer-spin-button {
   max-width: 1600px;
   width: 100%;
   margin: 60px auto 0;
+  padding: 24px;
 }
 
 .header {
@@ -36,4 +37,12 @@ input[type='number']::-webkit-outer-spin-button {
   -webkit-box-shadow: 0 3px 6px 0 rgba(50, 50, 50, .3);
   box-shadow: 0 3px 6px 0 rgba(50, 50, 50, .3);
   padding: 0 24px;
+}
+
+.tool {
+  height: calc(100vh - 60px);
+  box-sizing: border-box;
+  align-items: center;
+  overflow: auto;
+  overflow-x: hidden;
 }
