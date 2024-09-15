@@ -19,17 +19,15 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={fnt.className}>
-        <h1 className="text-4xl text-indigo-800 font-bold my-2">
-          画像サイズを下げる
-        </h1>
-        <ul className="flex bg-blue-600 mb-4 pl-2">
-          <li className="block px-4 py-2 my-1 hover:bg-gray-100 rounded">
-            <Link className="no-underline text-blue-300" href="/">
-              Home
-            </Link>
-          </li>
-        </ul>
-        <div className="ml-2">{children}</div>
+        <header className="header">
+          <nav></nav>
+        </header>
+        <div className="main">
+          <h1 className="text-4xl text-indigo-800 font-bold my-2 center">
+            画像サイズを下げる
+          </h1>
+          <div className="ml-2">{children}</div>
+        </div>
       </body>
     </html>
   );
