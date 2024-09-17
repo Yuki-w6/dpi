@@ -17,21 +17,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja">
-      <body className={fnt.className}>
-        <header className="h-16 shadow">
+    <html lang="ja" className="h-full">
+      <body className={`h-full overflow-hidden ${fnt.className}`}>
+        <header className="block fixed top-0 left-0 right-0 h-16 z-10">
           <nav></nav>
         </header>
-        <div className="w-full p-6">
-          <div className="tool">
-            <h1 className="text-4xl font-semibold text-center">
-              画像のサイズを下げる
-            </h1>
-            <h2 className="text-xl text-center text-gray-800 mt-2">
-              アップロードした画像の解像度を下げ、画像のサイズを下げます。
-            </h2>
-            <div className="ml-2">{children}</div>
-          </div>
+        <div className="h-full mt-16">
+          <div className="h-full w-full p-6 bg-gray-100">{children}</div>
+        </div>
+        <div className="block fixed left-0 right-0 bottom-0 h-12 z-10 bg-white">
+          <div className="text-center p-2.5">test</div>
         </div>
       </body>
     </html>

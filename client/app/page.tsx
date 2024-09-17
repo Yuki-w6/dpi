@@ -2,10 +2,6 @@
 
 import { useState } from 'react';
 import './ui/global.css';
-import { Noto_Sans_JP } from 'next/font/google';
-
-// Googleフォントを有効化
-const fnt = Noto_Sans_JP({ subsets: ['latin'] });
 
 export default function Page() {
   const [file, setFile] = useState(null);
@@ -43,20 +39,21 @@ export default function Page() {
   };
 
   return (
-    <div>
-      <h1>画像アップロード</h1>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleUpload}>アップロード</button>
-      {message && (
-        <div>
-          <p>{message}</p>
-          <p>ファイル名: {filename}</p>
-          <p>幅: {width}</p>
-          <p>高さ: {height}</p>
-          <p>解像度（水平方向）: {x_dpi}</p>
-          <p>解像度（垂直方向）: {y_dpi}</p>
-        </div>
-      )}
+    <div className="text-center">
+      <h1 className="text-4xl font-semibold text-center">
+        画像のサイズを下げる
+      </h1>
+      <h2 className="text-xl text-center text-gray-800 mt-2 pb-8">
+        アップロードした画像の解像度を下げ、画像のサイズを下げます。
+      </h2>
+
+      <button className="bg-blue-400 hover:bg-blue-600 text-white text-xl font-bold py-6 px-24 rounded-xl">
+        画像を選択
+      </button>
+      {/* ドロップメッセージ */}
+      <p className="mt-4 text-gray-500">
+        または、ここに画像をドロップしてください
+      </p>
     </div>
   );
 }
