@@ -1,10 +1,7 @@
 import Link from 'next/link';
 
-import './ui/global.css';
-import { Noto_Sans_JP } from 'next/font/google';
-
-// Googleフォントを有効化
-const fnt = Noto_Sans_JP({ subsets: ['latin'] });
+import '@/app/ui/global.css';
+import { notoSansJp } from '@/app/ui/fonts';
 
 export const metadata = {
   title: 'reduce image size',
@@ -18,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja" className="h-full">
-      <body className={`h-full overflow-hidden ${fnt.className}`}>
+      <body className={`${notoSansJp.className} h-full overflow-hidden`}>
         <header className="block fixed top-0 left-0 right-0 h-16 z-10">
           <nav></nav>
         </header>

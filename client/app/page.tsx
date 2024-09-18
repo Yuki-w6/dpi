@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import './ui/global.css';
 
 export default function Page() {
   const [file, setFile] = useState(null);
@@ -11,12 +10,26 @@ export default function Page() {
   const [x_dpi, setXDPI] = useState(null);
   const [y_dpi, setYDPI] = useState(null);
   const [filename, setFilename] = useState('');
+  const [thumbnail, setThumbnail] = useState('');
 
   const handleFileChange = (e: any) => {
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+    uploadFile(selectedFile);
   };
 
-  const handleUpload = async () => {
+  const handleDrop = (e: any) => {
+    e.preventDefault();
+    const droppedFile = e.dataTransfer.files[0];
+    setFile(droppedFile);
+    uploadFile(droppedFile);
+  };
+
+  const handleDragOver = (e: any) => {
+    e.preventDefault();
+  };
+
+  const uploadFile = async (file: any) => {
     if (!file) {
       setMessage('ファイルが選択されていません。');
       return;
@@ -36,10 +49,15 @@ export default function Page() {
     setFilename(data.filename);
     setXDPI(data.xDPI);
     setYDPI(data.yDPI);
+    setThumbnail(data.thumbnail);
   };
 
   return (
-    <div className="text-center">
+    <div
+      className="text-center"
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+    >
       <h1 className="text-4xl font-semibold text-center">
         画像のサイズを下げる
       </h1>
@@ -47,13 +65,28 @@ export default function Page() {
         アップロードした画像の解像度を下げ、画像のサイズを下げます。
       </h2>
 
-      <button className="bg-blue-400 hover:bg-blue-600 text-white text-xl font-bold py-6 px-24 rounded-xl">
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        className="hidden"
+        id="fileInput"
+      />
+      <label
+        htmlFor="fileInput"
+        className="bg-blue-400 hover:bg-blue-600 text-white text-xl font-bold py-6 px-24 rounded-xl cursor-pointer"
+      >
         画像を選択
-      </button>
+      </label>
       {/* ドロップメッセージ */}
-      <p className="mt-4 text-gray-500">
+      <p className="mt-10 text-gray-500">
         または、ここに画像をドロップしてください
       </p>
+      {thumbnail && (
+        <div className="mt-4">
+          <img src={thumbnail} alt="サムネイル" className="mx-auto" />
+        </div>
+      )}
     </div>
   );
 }
