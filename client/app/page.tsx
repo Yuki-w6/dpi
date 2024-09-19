@@ -5,6 +5,9 @@ import { useState } from 'react';
 export default function Page() {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
+  const [sizeInKB, setSizeInKB] = useState(null);
+  const [sizeInMB, setSizeInMB] = useState(null);
+  const [sizeInGB, setSizeInGB] = useState(null);
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
   const [x_dpi, setXDPI] = useState(null);
@@ -50,6 +53,8 @@ export default function Page() {
     setXDPI(data.xDPI);
     setYDPI(data.yDPI);
     setThumbnail(data.thumbnail);
+    setSizeInKB(data.sizeInKB);
+    setSizeInMB(data.sizeInMB);
   };
 
   return (
@@ -87,6 +92,13 @@ export default function Page() {
           <img src={thumbnail} alt="サムネイル" className="mx-auto" />
         </div>
       )}
+      {filename && <div>ファイル名：{filename}</div>}
+      {sizeInKB && <div>サイズ（KB）：{sizeInKB} KB</div>}
+      {sizeInMB && <div>サイズ（MB）：{sizeInMB} MB</div>}
+      {width && <div>幅：{width}</div>}
+      {height && <div>高さ：{height}</div>}
+      {x_dpi && <div>水平方向の解像度：{x_dpi} dpi</div>}
+      {y_dpi && <div>垂直方向の解像度：{y_dpi} dpi</div>}
     </div>
   );
 }

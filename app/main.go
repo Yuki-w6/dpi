@@ -5,6 +5,7 @@ import (
 	"image/jpeg"
 	_ "image/png"
 	"log"
+	"math"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -60,6 +61,23 @@ func main() {
 			return
 		}
 
+		fileInfo, err := os.Stat(filePath)
+		if err != nil {
+			c.JSON(500, gin.H{"error": "画像情報の取得に失敗しました。"})
+			return
+		}
+
+		fileSize := fileInfo.Size()
+		// サイズを MB と GB に変換
+		const (
+			KB = 1 << 10
+			MB = 1 << 20 // 1 MB = 2^20 バイト
+			GB = 1 << 30 // 1 GB = 2^30 バイト
+		)
+
+		sizeInKB := math.Floor(float64(fileSize)/float64(KB)*100) / 100
+		sizeInMB := math.Floor(float64(fileSize)/float64(MB)*100) / 100
+
 		// 画像の幅と高さを取得
 		fileData, err := os.Open(filePath)
 		if err != nil {
@@ -91,6 +109,8 @@ func main() {
 			"message":  "画像をアップロードしました。",
 			"filename": file.Filename,
 			"path":     encryptedFilePath,
+			"sizeInKB": sizeInKB,
+			"sizeInMB": sizeInMB,
 			"width":    width,
 			"height":   height,
 			"xDPI":     xDPI,

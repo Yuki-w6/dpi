@@ -8,6 +8,11 @@
         "visualstudio",
         "datasource",
         "tailwindcss",
-        "Noto"
+        "Noto",
+        "gonic",
+        "joho",
+        "godotenv",
+        "Yuki",
+        "exif"
     ]
 }
